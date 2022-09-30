@@ -1,0 +1,8 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/BallTalkAPI/BallTalkAPI/bin/Debug/net6.0
+/BallTalkAPI/BallTalkAPI/obj/Debug/net6.0
+/BallTalkAPI/BallTalkAPI/obj
+/BallTalkAPI/.vs/BallTalkAPI
