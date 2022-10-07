@@ -1,103 +1,102 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using BallTalkAPI.Data;
-using BallTalkAPI.Models;
+using AutoMapper;
+using BallTalkAPI.Interfaces;
+using BallTalkAPI.Entities;
+using BallTalkAPI.Data.DTOs.Post;
 
 namespace BallTalkAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Topics/{topicName:string}/[controller]")]
     [ApiController]
     public class PostsController : ControllerBase
     {
-        private readonly BallTalkContext _context;
+        private readonly ITopicRepository _topicRepository;
+        private readonly IPostRepository _postRepository;
 
-        public PostsController(BallTalkContext context)
+        private readonly IMapper _mapper;
+
+        public PostsController(ITopicRepository topicRepository, IPostRepository postRepository, IMapper mapper)
         {
-            _context = context;
+            _topicRepository = topicRepository;
+            _postRepository = postRepository;
+            _mapper = mapper;
         }
 
-        // GET: api/Posts
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Post>>> GetPosts()
+        public async Task<ActionResult<IEnumerable<PostDTO>>> GetPosts(string name)
         {
-            return await _context.Posts.ToListAsync();
+            var topic = await GetTopic(name);
+
+            return topic.Posts
+                .Select(post => _mapper.Map<PostDTO>(post))
+                .ToList();
+
         }
 
-        // GET: api/Posts/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Post>> GetPost(int id)
+        public async Task<ActionResult<PostDTO>> GetPost(string topicName, int id)
         {
-            var post = await _context.Posts.FindAsync(id);
+            var topic = await GetTopic(topicName);
+            var post = topic.Posts.FirstOrDefault(post => post.Id == id);
 
-            if (post == null)
-            {
-                return NotFound();
-            }
-
-            return post;
+            return post == null ? NotFound() : Ok(_mapper.Map<PostDTO>(post));
         }
 
-        // PUT: api/Posts/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutPost(int id, Post post)
-        {
-            if (id != post.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(post).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!PostExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Posts
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Post>> PostPost(Post post)
+        public async Task<ActionResult<PostDTO>> PostPost(string topicName, AddPostDTO postDTO)
         {
-            _context.Posts.Add(post);
-            await _context.SaveChangesAsync();
+            var topic = await GetTopic(topicName);
 
-            return CreatedAtAction("GetPost", new { id = post.Id }, post);
+            var post = _mapper.Map<Post>(postDTO);
+            post.Topic = topic;
+            await _postRepository.AddPostAsync(post);
+
+            return Created($"/api/Topics/{topicName}/Posts/{post.Id}", _mapper.Map<PostDTO>(post));
         }
 
-        // DELETE: api/Posts/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePost(int id)
+        [HttpPut("{id}")]
+        public async Task<ActionResult<PostDTO>> PutPost(string topicName, int id, PutPostDTO putPostDTO)
         {
-            var post = await _context.Posts.FindAsync(id);
+            var topic = await GetTopic(topicName);
+            var post = topic.Posts.FirstOrDefault(post => post.Id == id);
+
             if (post == null)
             {
                 return NotFound();
             }
 
-            _context.Posts.Remove(post);
-            await _context.SaveChangesAsync();
+            _mapper.Map(putPostDTO, post);
+            await _postRepository.PutPostAsync(post);
+
+            return Ok(_mapper.Map<PostDTO>(post));
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeletePost(string topicName, int id)
+        {
+            var topic = await GetTopic(topicName);
+            var post = topic.Posts.FirstOrDefault(post => post.Id == id);
+
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            await _postRepository.DeletePostAsync(post);
 
             return NoContent();
         }
 
-        private bool PostExists(int id)
+        private async Task<Topic> GetTopic(string topicName)
         {
-            return _context.Posts.Any(e => e.Id == id);
+            var topic = await _topicRepository.GetTopicByNameAsync(topicName, true);
+
+            if (topic == null)
+            {
+                throw new System.Web.Http.HttpResponseException(System.Net.HttpStatusCode.NotFound);
+            }
+
+            return topic;
         }
     }
 }

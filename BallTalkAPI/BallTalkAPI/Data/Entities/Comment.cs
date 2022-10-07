@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BallTalkAPI.Models
+namespace BallTalkAPI.Entities
 {
     public class Comment
     {

@@ -1,4 +1,4 @@
-﻿using BallTalkAPI.Models;
+﻿using BallTalkAPI.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace BallTalkAPI.Data
@@ -12,7 +12,7 @@ namespace BallTalkAPI.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer();
+            optionsBuilder.UseSqlServer("Data Source=localhost;Initial Catalog=BallTalk;User ID=sa;Password=BallTalk123!@#");
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BallTalkAPI.Models
+namespace BallTalkAPI.Entities
 {
     public class Post
     {
@@ -10,6 +10,8 @@ namespace BallTalkAPI.Models
         [Required]
         public string Content { get; set; }
         public bool Approved { get; set; } = false;
+        public DateTime Posted { get; set; } = DateTime.Now;
+
         public Topic Topic { get; set; }
         public ICollection<Comment> Comments { get; set; }
     }
