@@ -6,7 +6,7 @@ using BallTalkAPI.Data.DTOs.Comment;
 
 namespace BallTalkAPI.Controllers
 {
-    [Route("api/Topics/{topicName:string}/Posts/{postId:int}/[controller]")]
+    [Route("api/Topics/{topicName}/Posts/{postId:int}/[controller]")]
     [ApiController]
     public class CommentsController : ControllerBase
     {
@@ -43,7 +43,7 @@ namespace BallTalkAPI.Controllers
 
             var comment = post.Comments.FirstOrDefault(comment => comment.Id == id);
 
-            return comment == null ? NotFound() : Ok(_mapper.Map<CommentDTO>(comment));
+            return comment == null ? NotFound($"Comment with id {id} not found.") : Ok(_mapper.Map<CommentDTO>(comment));
         }
 
         [HttpPost]
@@ -68,7 +68,7 @@ namespace BallTalkAPI.Controllers
 
             if (comment == null)
             {
-                return NotFound();
+                return NotFound($"Comment with id {id} not found.");
             }
 
             _mapper.Map(addOrUpdateCommentDTO, comment);
@@ -86,7 +86,7 @@ namespace BallTalkAPI.Controllers
 
             if (comment == null)
             {
-                return NotFound();
+                return NotFound($"Comment with id {id} not found.");
             }
 
             await _commentRepository.DeleteCommentAsync(comment);
@@ -96,11 +96,11 @@ namespace BallTalkAPI.Controllers
 
         private async Task<Topic> GetTopic(string topicName)
         {
-            var topic = await _topicRepository.GetTopicByNameAsync(topicName);
+            var topic = await _topicRepository.GetTopicByNameAsync(topicName, true);
 
             if (topic == null)
             {
-                throw new System.Web.Http.HttpResponseException(System.Net.HttpStatusCode.NotFound);
+                throw new BadHttpRequestException($"Topic {topicName} not found.", StatusCodes.Status404NotFound);
             }
 
             return topic;
@@ -112,7 +112,7 @@ namespace BallTalkAPI.Controllers
 
             if (post == null)
             {
-                throw new System.Web.Http.HttpResponseException(System.Net.HttpStatusCode.NotFound);
+                throw new BadHttpRequestException($"Post with id {id} not found.", StatusCodes.Status404NotFound);
             }
 
             return post;

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BallTalkAPI.Data;
+using BallTalkAPI.Filters;
 using BallTalkAPI.Interfaces;
 using BallTalkAPI.Repositories;
 
@@ -7,7 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(config =>
+{
+    config.Filters.Add<UnhandledExceptionFilterAttribute>();
+});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

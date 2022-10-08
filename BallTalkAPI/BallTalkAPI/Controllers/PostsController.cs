@@ -3,10 +3,11 @@ using AutoMapper;
 using BallTalkAPI.Interfaces;
 using BallTalkAPI.Entities;
 using BallTalkAPI.Data.DTOs.Post;
+using System.Net;
 
 namespace BallTalkAPI.Controllers
 {
-    [Route("api/Topics/{topicName:string}/[controller]")]
+    [Route("api/Topics/{topicName}/[controller]")]
     [ApiController]
     public class PostsController : ControllerBase
     {
@@ -23,9 +24,9 @@ namespace BallTalkAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PostDTO>>> GetPosts(string name)
+        public async Task<ActionResult<IEnumerable<PostDTO>>> GetPosts(string topicName)
         {
-            var topic = await GetTopic(name);
+            var topic = await GetTopic(topicName);
 
             return topic.Posts
                 .Select(post => _mapper.Map<PostDTO>(post))
@@ -39,7 +40,7 @@ namespace BallTalkAPI.Controllers
             var topic = await GetTopic(topicName);
             var post = topic.Posts.FirstOrDefault(post => post.Id == id);
 
-            return post == null ? NotFound() : Ok(_mapper.Map<PostDTO>(post));
+            return post == null ? NotFound($"Post with id {id} not found.") : Ok(_mapper.Map<PostDTO>(post));
         }
 
         [HttpPost]
@@ -62,7 +63,7 @@ namespace BallTalkAPI.Controllers
 
             if (post == null)
             {
-                return NotFound();
+                return NotFound($"Post with id {id} not found.");
             }
 
             _mapper.Map(putPostDTO, post);
@@ -79,12 +80,34 @@ namespace BallTalkAPI.Controllers
 
             if (post == null)
             {
-                return NotFound();
+                return NotFound($"Post with id {id} not found.");
             }
 
             await _postRepository.DeletePostAsync(post);
 
             return NoContent();
+        }
+
+        [HttpPost("{id}/approve")]
+        public async Task<ActionResult<PostDTO>> ApprovePost(string topicName, int id)
+        {
+            var topic = await GetTopic(topicName);
+            var post = topic.Posts.FirstOrDefault(post => post.Id == id);
+
+            if (post == null)
+            {
+                return NotFound($"Post with id {id} not found.");
+            }
+
+            if (post.Approved)
+            {
+                return Conflict($"Post with id {id} already approved.");
+            }
+
+            post.Approved = true;
+            await _postRepository.PutPostAsync(post);
+
+            return Ok(_mapper.Map<PostDTO>(post));
         }
 
         private async Task<Topic> GetTopic(string topicName)
@@ -93,7 +116,7 @@ namespace BallTalkAPI.Controllers
 
             if (topic == null)
             {
-                throw new System.Web.Http.HttpResponseException(System.Net.HttpStatusCode.NotFound);
+                throw new BadHttpRequestException($"Topic {topicName} not found.", StatusCodes.Status404NotFound);
             }
 
             return topic;

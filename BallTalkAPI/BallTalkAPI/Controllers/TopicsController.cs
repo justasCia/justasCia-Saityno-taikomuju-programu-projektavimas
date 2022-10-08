@@ -35,7 +35,7 @@ namespace BallTalkAPI.Controllers
 
             if (topic == null)
             {
-                return NotFound();
+                return NotFound($"Topic with id {id} not found.");
             }
 
             return _mapper.Map<TopicDTO>(topic);
@@ -48,7 +48,7 @@ namespace BallTalkAPI.Controllers
 
             if (topic != null)
             {
-                return Conflict();
+                return Conflict($"Topic with name {topicDTO.Name} already exists.");
             }
 
             await _topicRepository.AddTopicAsync(_mapper.Map<Topic>(topicDTO));
@@ -61,14 +61,14 @@ namespace BallTalkAPI.Controllers
         {
             if (await _topicRepository.GetTopicByNameAsync(topicDTO.Name) != null)
             {
-                return BadRequest();
+                return Conflict($"Topic with name {topicDTO.Name} already exists.");
             }
 
             var topic = await _topicRepository.GetTopicByNameAsync(name);
 
             if (topic == null)
             {
-                return NotFound();
+                return NotFound($"Topic {name} not found.");
             }
 
             _mapper.Map(topicDTO, topic);
@@ -84,7 +84,7 @@ namespace BallTalkAPI.Controllers
 
             if (topic == null)
             {
-                return NotFound();
+                return NotFound($"Topic with id {id} not found.");
             }
 
             await _topicRepository.DeleteTopicAsync(topic);

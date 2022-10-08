@@ -6,6 +6,6 @@
         public string Title { get; set; }
         public string Content { get; set; }
         public bool Approved { get; set; }
-        public DateTime Posted { get; set; } = DateTime.UtcNow;
+        public DateTime Posted { get; set; }
     }
 }
