@@ -29,6 +29,7 @@ namespace BallTalkAPI.Controllers
             var topic = await GetTopic(topicName);
 
             return topic.Posts
+                .OrderByDescending(post => post.Posted)
                 .Select(post => _mapper.Map<PostDTO>(post))
                 .ToList();
 

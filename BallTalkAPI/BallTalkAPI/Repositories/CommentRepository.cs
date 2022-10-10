@@ -21,7 +21,10 @@ namespace BallTalkAPI.Repositories
 
         public async Task<IEnumerable<Comment>> GetCommentsByPostAsync(int postId)
         {
-            return await _context.Comments.Where(comment => comment.Post.Id == postId).ToListAsync();
+            return await _context.Comments
+                .Include(comment => comment.Post)
+                .Where(comment => comment.Post.Id == postId)
+                .ToListAsync();
         }
         public async Task<Comment> AddCommentAsync(Comment Comment)
         {

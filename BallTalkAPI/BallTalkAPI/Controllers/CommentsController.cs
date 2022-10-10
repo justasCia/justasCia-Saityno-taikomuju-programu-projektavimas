@@ -31,6 +31,7 @@ namespace BallTalkAPI.Controllers
             var post = await GetPost(postId, true);
 
             return post.Comments
+                .OrderByDescending(comment => comment.Posted)
                 .Select(comment => _mapper.Map<CommentDTO>(comment))
                 .ToList();
         }
