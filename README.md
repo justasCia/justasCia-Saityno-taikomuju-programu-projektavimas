@@ -39,3 +39,5 @@ Veikimo principas – pačią kuriamą platformą sudaro dvi dalys: internetinė
 **Sistemos sudedamosios dalys:**
 - Kliento pusė (ang. Front-End) – naudojant React.js
 - Serverio pusė (angl. Back-End) – naudojant ASP>NET Core. Duomenų bazė – SQL server
+
+![Picture1](https://user-images.githubusercontent.com/66777570/194723730-37666f03-8a72-4d8c-a33a-3e3e5ceb2e91.png)
