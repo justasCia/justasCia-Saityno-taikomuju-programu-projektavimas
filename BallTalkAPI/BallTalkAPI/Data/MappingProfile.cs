@@ -2,6 +2,7 @@
 using BallTalkAPI.Data.DTOs;
 using BallTalkAPI.Data.DTOs.Comment;
 using BallTalkAPI.Data.DTOs.Post;
+using BallTalkAPI.Data.DTOs.Topic;
 using BallTalkAPI.Entities;
 
 namespace BallTalkAPI.Data
@@ -13,6 +14,7 @@ namespace BallTalkAPI.Data
             // Mapping Topic
             CreateMap<Topic, TopicDTO>();
             CreateMap<TopicDTO, Topic>();
+            CreateMap<AddOrUpdateTopicDTO, Topic>();
 
             // Mapping Post
             CreateMap<Post, PostDTO>();

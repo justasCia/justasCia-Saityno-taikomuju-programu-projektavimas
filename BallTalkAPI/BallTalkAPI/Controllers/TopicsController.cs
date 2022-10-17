@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using BallTalkAPI.Entities;
 using BallTalkAPI.Interfaces;
 using AutoMapper;
-using BallTalkAPI.Data.DTOs;
+using BallTalkAPI.Data.DTOs.Topic;
 
 namespace BallTalkAPI.Controllers
 {
@@ -42,7 +41,7 @@ namespace BallTalkAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<TopicDTO>> PostTopic(TopicDTO topicDTO)
+        public async Task<ActionResult<TopicDTO>> PostTopic(AddOrUpdateTopicDTO topicDTO)
         {
             var topic = (await _topicRepository.GetTopicsAsync()).FirstOrDefault(topic => topic.Name == topicDTO.Name);
 
@@ -51,24 +50,24 @@ namespace BallTalkAPI.Controllers
                 return Conflict($"Topic with name {topicDTO.Name} already exists.");
             }
 
-            await _topicRepository.AddTopicAsync(_mapper.Map<Topic>(topicDTO));
+            topic = await _topicRepository.AddTopicAsync(_mapper.Map<Topic>(topicDTO));
 
-            return Created($"/api/topics/{topicDTO.Name}", topicDTO);
+            return Created($"/api/topics/{topicDTO.Name}", _mapper.Map<TopicDTO>(topic));
         }
 
-        [HttpPut("{name}")]
-        public async Task<ActionResult<TopicDTO>> PutTopic(string name, TopicDTO topicDTO)
+        [HttpPut("{id}")]
+        public async Task<ActionResult<TopicDTO>> PutTopic(int id, AddOrUpdateTopicDTO topicDTO)
         {
             if (await _topicRepository.GetTopicByNameAsync(topicDTO.Name) != null)
             {
                 return Conflict($"Topic with name {topicDTO.Name} already exists.");
             }
 
-            var topic = await _topicRepository.GetTopicByNameAsync(name);
+            var topic = await _topicRepository.GetTopicAsync(id);
 
             if (topic == null)
             {
-                return NotFound($"Topic {name} not found.");
+                return NotFound($"Topic with id {id} not found.");
             }
 
             _mapper.Map(topicDTO, topic);
@@ -85,21 +84,6 @@ namespace BallTalkAPI.Controllers
             if (topic == null)
             {
                 return NotFound($"Topic with id {id} not found.");
-            }
-
-            await _topicRepository.DeleteTopicAsync(topic);
-
-            return NoContent();
-        }
-
-        [HttpDelete("{name}")]
-        public async Task<IActionResult> DeleteTopic(string name)
-        {
-            var topic = await _topicRepository.GetTopicByNameAsync(name);
-
-            if (topic == null)
-            {
-                return NotFound();
             }
 
             await _topicRepository.DeleteTopicAsync(topic);

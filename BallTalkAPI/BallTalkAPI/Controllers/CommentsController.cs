@@ -6,7 +6,7 @@ using BallTalkAPI.Data.DTOs.Comment;
 
 namespace BallTalkAPI.Controllers
 {
-    [Route("api/Topics/{topicName}/Posts/{postId:int}/[controller]")]
+    [Route("api/Topics/{topicId}/Posts/{postId:int}/[controller]")]
     [ApiController]
     public class CommentsController : ControllerBase
     {
@@ -25,51 +25,55 @@ namespace BallTalkAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetComments(string topicName, int postId)
+        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetComments(int topicId, int postId)
         {
-            var topic = await GetTopic(topicName);
-            var post = await GetPost(postId, true);
+            var (topic, post) = await GetTopicAndPost(topicId, postId);
 
-            return post.Comments
+            var comments = (await _commentRepository.GetCommentsByPostAsync(postId))
                 .OrderByDescending(comment => comment.Posted)
-                .Select(comment => _mapper.Map<CommentDTO>(comment))
-                .ToList();
+                .Select(comment => _mapper.Map<CommentDTO>(comment));
+
+            return Ok(comments);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<CommentDTO>> GetComment(string topicName, int postId, int id)
+        public async Task<ActionResult<CommentDTO>> GetComment(int topicId, int postId, int id)
         {
-            var topic = await GetTopic(topicName);
-            var post = await GetPost(postId);
+            var (topic, post) = await GetTopicAndPost(topicId, postId);
 
-            var comment = post.Comments.FirstOrDefault(comment => comment.Id == id);
+            var comment = await _commentRepository.GetCommentAsync(id);
 
-            return comment == null ? NotFound($"Comment with id {id} not found.") : Ok(_mapper.Map<CommentDTO>(comment));
+            if (comment == null || comment.PostId != post.Id)
+            {
+                return NotFound($"Comment not found.");
+            }
+
+
+            return Ok(_mapper.Map<CommentDTO>(comment));
         }
 
         [HttpPost]
-        public async Task<ActionResult<CommentDTO>> PostComment(string topicName, int postId, AddOrUpdateCommentDTO addOrUpdateCommentDTO)
+        public async Task<ActionResult<CommentDTO>> PostComment(int topicId, int postId, AddOrUpdateCommentDTO addOrUpdateCommentDTO)
         {
-            await GetTopic(topicName);
-            var post = await GetPost(postId);
+            var (topic, post) = await GetTopicAndPost(topicId, postId);
 
             var comment = _mapper.Map<Comment>(addOrUpdateCommentDTO);
             comment.Post = post;
             await _commentRepository.AddCommentAsync(comment);
 
-            return Created($"/api/Topics/{topicName}/Posts/{postId}/Comments/{comment.Id}", _mapper.Map<CommentDTO>(comment));
+            return Created($"/api/Topics/{topicId}/Posts/{postId}/Comments/{comment.Id}", _mapper.Map<CommentDTO>(comment));
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<CommentDTO>> PutComment(string topicName, int postId, int id, AddOrUpdateCommentDTO addOrUpdateCommentDTO)
+        public async Task<ActionResult<CommentDTO>> PutComment(int topicId, int postId, int id, AddOrUpdateCommentDTO addOrUpdateCommentDTO)
         {
-            await GetTopic(topicName);
-            var post = await GetPost(postId, true);
-            var comment = post.Comments.FirstOrDefault(comment => comment.Id == id);
+            var (topic, post) = await GetTopicAndPost(topicId, postId);
 
-            if (comment == null)
+            var comment = await _commentRepository.GetCommentAsync(id);
+
+            if (comment == null || comment.PostId != post.Id)
             {
-                return NotFound($"Comment with id {id} not found.");
+                return NotFound($"Comment not found.");
             }
 
             _mapper.Map(addOrUpdateCommentDTO, comment);
@@ -79,15 +83,15 @@ namespace BallTalkAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteComment(string topicName, int postId, int id)
+        public async Task<IActionResult> DeleteComment(int topicId, int postId, int id)
         {
-            await GetTopic(topicName);
-            var post = await GetPost(postId, true);
-            var comment = post.Comments.FirstOrDefault(comment => comment.Id == id);
+            var (topic, post) = await GetTopicAndPost(topicId, postId);
 
-            if (comment == null)
+            var comment = await _commentRepository.GetCommentAsync(id);
+
+            if (comment == null || comment.PostId != post.Id)
             {
-                return NotFound($"Comment with id {id} not found.");
+                return NotFound($"Comment not found.");
             }
 
             await _commentRepository.DeleteCommentAsync(comment);
@@ -95,28 +99,23 @@ namespace BallTalkAPI.Controllers
             return NoContent();
         }
 
-        private async Task<Topic> GetTopic(string topicName)
+        private async Task<(Topic, Post)> GetTopicAndPost(int topicId, int postId)
         {
-            var topic = await _topicRepository.GetTopicByNameAsync(topicName, true);
+            var topic = await _topicRepository.GetTopicAsync(topicId);
 
             if (topic == null)
             {
-                throw new BadHttpRequestException($"Topic {topicName} not found.", StatusCodes.Status404NotFound);
+                throw new BadHttpRequestException($"Topic not found.", StatusCodes.Status404NotFound);
             }
 
-            return topic;
-        }
+            var post = await _postRepository.GetPostAsync(postId);
 
-        private async Task<Post> GetPost(int id, bool includeComments = false)
-        {
-            var post = await _postRepository.GetPostAsync(id, includeComments);
-
-            if (post == null)
+            if (post == null || post.TopicId != topic.Id)
             {
-                throw new BadHttpRequestException($"Post with id {id} not found.", StatusCodes.Status404NotFound);
+                throw new BadHttpRequestException($"Post not found.", StatusCodes.Status404NotFound);
             }
 
-            return post;
+            return (topic, post);
         }
     }
 }

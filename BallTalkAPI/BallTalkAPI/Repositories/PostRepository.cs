@@ -19,11 +19,11 @@ namespace BallTalkAPI.Repositories
             return await _context.Posts.ToListAsync();
         }
 
-        public async Task<IEnumerable<Post>> GetPostsByTopicAsync(string topicName)
+        public async Task<IEnumerable<Post>> GetPostsByTopicAsync(int topicId)
         {
             return await _context.Posts
                 .Include(post => post.Topic)
-                .Where(post => post.Topic.Name == topicName)
+                .Where(post => post.Topic.Id == topicId)
                 .ToListAsync();
         }
 

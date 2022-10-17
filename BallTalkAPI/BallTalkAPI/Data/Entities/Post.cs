@@ -14,6 +14,7 @@ namespace BallTalkAPI.Entities
 
 
         //public User User { get; set; }
+        public int TopicId { get; set; }
         public Topic Topic { get; set; }
         public ICollection<Comment> Comments { get; set; }
     }
