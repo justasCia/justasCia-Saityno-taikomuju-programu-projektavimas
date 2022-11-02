@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BallTalkAPI.Auth;
+using System.ComponentModel.DataAnnotations;
 
 namespace BallTalkAPI.Entities
 {
-    public class Post
+    public class Post : IUserOwnedResource
     {
         public int Id { get; set; }
         [Required]
@@ -12,10 +13,9 @@ namespace BallTalkAPI.Entities
         public bool Approved { get; set; } = false;
         public DateTime Posted { get; set; } = DateTime.UtcNow;
 
-
-        //public User User { get; set; }
         public int TopicId { get; set; }
         public Topic Topic { get; set; }
         public ICollection<Comment> Comments { get; set; }
+        public string UserId { get; set; }
     }
 }

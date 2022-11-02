@@ -3,10 +3,14 @@ using BallTalkAPI.Entities;
 using BallTalkAPI.Interfaces;
 using AutoMapper;
 using BallTalkAPI.Data.DTOs.Comment;
+using Microsoft.AspNetCore.Authorization;
+using BallTalkAPI.Auth.Entities;
+using BallTalkAPI.Auth;
 
 namespace BallTalkAPI.Controllers
 {
     [Route("api/Topics/{topicId}/Posts/{postId:int}/[controller]")]
+    [Authorize(Roles = Roles.User)]
     [ApiController]
     public class CommentsController : ControllerBase
     {
@@ -14,13 +18,16 @@ namespace BallTalkAPI.Controllers
         private readonly IPostRepository _postRepository;
         private readonly ICommentRepository _commentRepository;
 
+        private readonly IAuthorizationService _authorizationService;
+
         private readonly IMapper _mapper;
 
-        public CommentsController(ITopicRepository topicRepository, IPostRepository postRepository, ICommentRepository commentRepository, IMapper mapper)
+        public CommentsController(ITopicRepository topicRepository, IPostRepository postRepository, ICommentRepository commentRepository, IAuthorizationService authorizationService, IMapper mapper)
         {
             _topicRepository = topicRepository;
             _postRepository = postRepository;
             _commentRepository = commentRepository;
+            _authorizationService = authorizationService;
             _mapper = mapper;
         }
 
@@ -76,6 +83,13 @@ namespace BallTalkAPI.Controllers
                 return NotFound($"Comment not found.");
             }
 
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, comment, PolicyNames.ResourceOwner);
+
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+
             _mapper.Map(addOrUpdateCommentDTO, comment);
             await _commentRepository.PutCommentAsync(comment);
 
@@ -92,6 +106,13 @@ namespace BallTalkAPI.Controllers
             if (comment == null || comment.PostId != post.Id)
             {
                 return NotFound($"Comment not found.");
+            }
+
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, comment, PolicyNames.ResourceOwner);
+
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
             }
 
             await _commentRepository.DeleteCommentAsync(comment);

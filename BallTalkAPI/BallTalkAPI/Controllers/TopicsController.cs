@@ -3,6 +3,8 @@ using BallTalkAPI.Entities;
 using BallTalkAPI.Interfaces;
 using AutoMapper;
 using BallTalkAPI.Data.DTOs.Topic;
+using BallTalkAPI.Auth.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BallTalkAPI.Controllers
 {
@@ -20,6 +22,7 @@ namespace BallTalkAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = Roles.User)]
         public async Task<ActionResult<IEnumerable<TopicDTO>>> GetTopics()
         {
             return (await _topicRepository.GetTopicsAsync())
@@ -28,6 +31,7 @@ namespace BallTalkAPI.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = Roles.User)]
         public async Task<ActionResult<TopicDTO>> GetTopic(int id)
         {
             var topic = await _topicRepository.GetTopicAsync(id);
@@ -41,6 +45,7 @@ namespace BallTalkAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<TopicDTO>> PostTopic(AddOrUpdateTopicDTO topicDTO)
         {
             var topic = (await _topicRepository.GetTopicsAsync()).FirstOrDefault(topic => topic.Name == topicDTO.Name);
@@ -56,6 +61,7 @@ namespace BallTalkAPI.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<TopicDTO>> PutTopic(int id, AddOrUpdateTopicDTO topicDTO)
         {
             if (await _topicRepository.GetTopicByNameAsync(topicDTO.Name) != null)
@@ -77,6 +83,7 @@ namespace BallTalkAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> DeleteTopic(int id)
         {
             var topic = await _topicRepository.GetTopicAsync(id);

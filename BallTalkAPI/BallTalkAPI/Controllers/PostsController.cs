@@ -4,6 +4,11 @@ using BallTalkAPI.Interfaces;
 using BallTalkAPI.Entities;
 using BallTalkAPI.Data.DTOs.Post;
 using System.Net;
+using Microsoft.AspNetCore.Authorization;
+using BallTalkAPI.Auth.Entities;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+using BallTalkAPI.Auth;
 
 namespace BallTalkAPI.Controllers
 {
@@ -14,16 +19,20 @@ namespace BallTalkAPI.Controllers
         private readonly ITopicRepository _topicRepository;
         private readonly IPostRepository _postRepository;
 
+        private readonly IAuthorizationService _authorizationService;
+
         private readonly IMapper _mapper;
 
-        public PostsController(ITopicRepository topicRepository, IPostRepository postRepository, IMapper mapper)
+        public PostsController(ITopicRepository topicRepository, IPostRepository postRepository, IAuthorizationService authorizationService, IMapper mapper)
         {
             _topicRepository = topicRepository;
             _postRepository = postRepository;
+            _authorizationService = authorizationService;
             _mapper = mapper;
         }
 
         [HttpGet]
+        [Authorize(Roles = Roles.User)]
         public async Task<ActionResult<IEnumerable<PostDTO>>> GetPosts(int topicId)
         {
             var topic = await GetTopic(topicId);
@@ -36,6 +45,7 @@ namespace BallTalkAPI.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = Roles.User)]
         public async Task<ActionResult<PostDTO>> GetPost(int topicId, int id)
         {
             var topic = await GetTopic(topicId);
@@ -45,18 +55,21 @@ namespace BallTalkAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = Roles.User)]
         public async Task<ActionResult<PostDTO>> PostPost(int topicId, AddPostDTO postDTO)
         {
             var topic = await GetTopic(topicId);
 
             var post = _mapper.Map<Post>(postDTO);
             post.Topic = topic;
+            post.UserId = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
             await _postRepository.AddPostAsync(post);
 
             return Created($"/api/Topics/{topicId}/Posts/{post.Id}", _mapper.Map<PostDTO>(post));
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = Roles.User)]
         public async Task<ActionResult<PostDTO>> PutPost(int topicId, int id, PutPostDTO putPostDTO)
         {
             var topic = await GetTopic(topicId);
@@ -68,6 +81,13 @@ namespace BallTalkAPI.Controllers
                 return NotFound($"Post not found.");
             }
 
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, post, PolicyNames.ResourceOwner);
+
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+
             _mapper.Map(putPostDTO, post);
             await _postRepository.PutPostAsync(post);
 
@@ -75,6 +95,7 @@ namespace BallTalkAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = Roles.User)]
         public async Task<IActionResult> DeletePost(int topicId, int id)
         {
             var topic = await GetTopic(topicId);
@@ -86,12 +107,20 @@ namespace BallTalkAPI.Controllers
                 return NotFound($"Post not found.");
             }
 
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, post, PolicyNames.ResourceOwner);
+
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+
             await _postRepository.DeletePostAsync(post);
 
             return NoContent();
         }
 
         [HttpPost("{id}/approve")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<PostDTO>> ApprovePost(int topicId, int id)
         {
             var topic = await GetTopic(topicId);
