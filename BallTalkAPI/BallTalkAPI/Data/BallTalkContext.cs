@@ -11,9 +11,8 @@ namespace BallTalkAPI.Data
         public DbSet<Post> Posts { get; set; }
         public DbSet<Comment> Comments { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public BallTalkContext(DbContextOptions<BallTalkContext> options) : base(options)
         {
-            optionsBuilder.UseSqlServer("Data Source=localhost;Initial Catalog=BallTalk;User ID=sa;Password=BallTalk123!@#");
         }
     }
 }

@@ -9,6 +9,7 @@ using BallTalkAPI.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -28,25 +29,29 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
-builder.Services.AddDbContext<BallTalkContext>();
+builder.Services.AddDbContext<BallTalkContext>(options =>
+{
+    var connectionString = builder.Configuration["DbConnectionString"];
+    options.UseSqlServer(connectionString);
+});
 AddRepositories(builder);
 AddAuth(builder);
 AddMapper(builder);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 app.MapControllers();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+var db = app.Services.CreateScope().ServiceProvider.GetRequiredService<BallTalkContext>();
+db.Database.Migrate();
 
 var dbSeeder = app.Services.CreateScope().ServiceProvider.GetRequiredService<AuthDbSeeder>();
 await dbSeeder.SeedAsync();
@@ -84,12 +89,13 @@ static void AddAuth(WebApplicationBuilder builder)
     })
         .AddJwtBearer(options =>
         {
-            options.TokenValidationParameters.ValidAudience = builder.Configuration["JWT:ValidAudience"];
-            options.TokenValidationParameters.ValidIssuer = builder.Configuration["JWT:ValidIssuer"];
-            options.TokenValidationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]));
+            options.TokenValidationParameters.ValidAudience = builder.Configuration["ValidAudience"];
+            options.TokenValidationParameters.ValidIssuer = builder.Configuration["ValidIssuer"];
+            options.TokenValidationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Secret"]));
         });
 
     builder.Services.AddSingleton<IJwtTokenService, JwtTokenService>();
+    JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
     builder.Services.AddScoped<AuthDbSeeder>();
 
     builder.Services.AddAuthorization(options =>
@@ -98,5 +104,4 @@ static void AddAuth(WebApplicationBuilder builder)
     });
 
     builder.Services.AddSingleton<IAuthorizationHandler, ResourceOwnerAuthorizationHandler>();
-    JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 }

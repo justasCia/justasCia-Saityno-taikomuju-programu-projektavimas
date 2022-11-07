@@ -1,0 +1,6 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "DbConnectionString": "Data Source=localhost;Initial Catalog=BallTalk;User ID=sa;Password=BallTalk123!@#"
+  }
+}

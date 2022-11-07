@@ -6,6 +6,8 @@ using BallTalkAPI.Data.DTOs.Comment;
 using Microsoft.AspNetCore.Authorization;
 using BallTalkAPI.Auth.Entities;
 using BallTalkAPI.Auth;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace BallTalkAPI.Controllers
 {
@@ -66,6 +68,7 @@ namespace BallTalkAPI.Controllers
 
             var comment = _mapper.Map<Comment>(addOrUpdateCommentDTO);
             comment.Post = post;
+            comment.UserId = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
             await _commentRepository.AddCommentAsync(comment);
 
             return Created($"/api/Topics/{topicId}/Posts/{postId}/Comments/{comment.Id}", _mapper.Map<CommentDTO>(comment));

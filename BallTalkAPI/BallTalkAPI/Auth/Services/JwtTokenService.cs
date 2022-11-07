@@ -13,9 +13,9 @@ namespace BallTalkAPI.Auth
 
         public JwtTokenService(IConfiguration configuration)
         {
-            _authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]));
-            _issuer = configuration["JWT:ValidIssuer"];
-            _audience = configuration["JWT:ValidAudience"];
+            _authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Secret"]));
+            _issuer = configuration["ValidIssuer"];
+            _audience = configuration["ValidAudience"];
         }
 
         public string CreateAccessToken(string userName, string userId, IEnumerable<string> userRoles)
