@@ -71,7 +71,7 @@ namespace BallTalkAPI.Controllers
             var roles = await _userManager.GetRolesAsync(user);
             var accessToken = _jwtTokenService.CreateAccessToken(user.UserName, user.Id, roles);
 
-            return Ok(new SuccessfulLoginDto(accessToken, user.UserName, roles));
+            return Ok(new SuccessfulLoginDto(accessToken, user.UserName, user.Id, roles));
         }
     }
 }

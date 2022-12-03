@@ -1,6 +1,21 @@
+import { Typography } from "@mui/material";
+import { isLoggedIn } from "../components/Api";
+import PostsList from "../components/PostsList";
+import Login from "./Login"
+
 const Home = () => {
     return (
-        <h1>Welcome, user!</h1>
+        <>
+            {
+                isLoggedIn()
+                ? 
+                <>
+                    <Typography component="h1" variant="h3">Welcome, {sessionStorage.getItem("username")}!</Typography>
+                    <PostsList showOnlyPending={true} />
+                </>
+                : <Login />
+            }
+        </>
     )
 }
 

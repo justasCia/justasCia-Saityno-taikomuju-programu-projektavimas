@@ -44,12 +44,25 @@ namespace BallTalkAPI.Controllers
             return Ok(posts);
         }
 
+        [HttpGet("/api/posts/pending")]
+        [Authorize(Roles = Roles.User)]
+        public async Task<ActionResult<IEnumerable<PostDTO>>> GetPosts()
+        {
+            var posts = (await _postRepository.GetPostsAsync())
+                .Where(post => !post.Approved)
+                .OrderByDescending(post => post.Posted)
+                .Select(post => _mapper.Map<PostDTO>(post));
+
+            return Ok(posts);
+        }
+
         [HttpGet("{id}")]
         [Authorize(Roles = Roles.User)]
         public async Task<ActionResult<PostDTO>> GetPost(int topicId, int id)
         {
             var topic = await GetTopic(topicId);
-            var post = topic.Posts.FirstOrDefault(post => post.Id == id);
+            var post = await _postRepository.GetPostAsync(id);
+            //var post = topic.Posts.FirstOrDefault(post => post.Id == id);
 
             return post == null ? NotFound($"Post not found.") : Ok(_mapper.Map<PostDTO>(post));
         }

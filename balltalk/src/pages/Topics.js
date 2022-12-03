@@ -1,31 +1,28 @@
+import { Grid } from "@mui/material";
+import { useEffect, useState } from "react";
 import { Link, Route, Switch, useRouteMatch } from "react-router-dom"
+import { Api, authConfig } from "../components/Api";
+import TopicsList from "../components/TopicsList";
 import Post from "./Post";
 import Topic from "./Topic";
 
 const Topics = () => {
     const match = useRouteMatch();
+
     return (
-        <div>
+        <>
             <Switch>
                 <Route exact path={`${match.path}/:topicId`}>
                     <Topic />
                 </Route>
                 <Route exact path={match.path}>
-                    <h2>Topics</h2>
-                    <ul>
-                        <li>
-                            <Link to="/topics/1">Topic 1</Link>
-                        </li>
-                        <li>
-                            <Link to="/topics/2">Topic 2</Link>
-                        </li>
-                    </ul>
+                    <TopicsList />
                 </Route>
                 <Route exact path={`${match.path}/:topicId/posts/:postId`}>
                     <Post />
                 </Route>
             </Switch>
-        </div>
+        </>
     );
 }
 

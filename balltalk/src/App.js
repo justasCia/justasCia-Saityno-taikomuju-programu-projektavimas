@@ -6,13 +6,21 @@ import {
 } from "react-router-dom";
 import Topics from './pages/Topics';
 import { CssBaseline, GlobalStyles} from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
 import { Container } from '@mui/system';
 import NavBar from './components/NavBar';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
+import Login from './pages/Login';
 
 const App = () => {
+  useState(() => {
+    const locations = ["/", "/login", "/register"];
+    if (!sessionStorage.getItem("accessToken") && !locations.includes(window.location.pathname)){
+      window.location.href = "/login";
+    }
+  }, []);
+
   return (
     <React.Fragment>
       <GlobalStyles styles={{ ul: { margin: 0, padding: 0, listStyle: 'none' } }} />
@@ -20,13 +28,16 @@ const App = () => {
 
       <Router>
         <NavBar />
-        <Container>
+        <Container maxWidth="100vw" sx={{padding: "20px"}}>
           <Switch>
-            <Route path="/topics">
-              <Topics />
-            </Route>
             <Route exact path="/">
               <Home />
+            </Route>
+            <Route path="/login">
+              <Login />
+            </Route>
+            <Route path="/topics">
+              <Topics />
             </Route>
             <Route path="/">
               <NotFound />

@@ -8,5 +8,6 @@
         public bool Approved { get; set; }
         public DateTime Posted { get; set; }
         public string UserId { get; set; }
+        public int TopicId { get; set; }
     }
 }
