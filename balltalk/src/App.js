@@ -12,6 +12,7 @@ import NavBar from './components/NavBar';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import Login from './pages/Login';
+import Register from './pages/Register';
 
 const App = () => {
   useState(() => {
@@ -35,6 +36,9 @@ const App = () => {
             </Route>
             <Route path="/login">
               <Login />
+            </Route>
+            <Route path="/register">
+              <Register />
             </Route>
             <Route path="/topics">
               <Topics />

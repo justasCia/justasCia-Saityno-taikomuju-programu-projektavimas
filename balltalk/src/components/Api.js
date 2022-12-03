@@ -12,7 +12,7 @@ const authConfig = {
 
 const isLoggedIn = () => sessionStorage.getItem("accessToken");
 
-const isAdmin = () => JSON.parse(sessionStorage.getItem("isAdmin")) === true;
+const isAdmin = () => sessionStorage.getItem("isAdmin") === "true";
 
 const userId = () => sessionStorage.getItem("userId");
 

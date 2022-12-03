@@ -29,7 +29,7 @@ const PostsList = ({ topicName, topicId, showOnlyPending }) => {
             {!showOnlyPending ?
                 <Link
                     style={{ textDecoration: 'none' }}
-                    to="/addPost"
+                    to={`/topics/${topicId}/posts/add`}
                 >
                     <Button variant="contained" sx={{ mb: 2 }}>
                         <Add color="#000"></Add>

@@ -6,7 +6,6 @@ import PostsList from "../components/PostsList";
 import Spinner from "../components/Spinner";
 
 const Topic = () => {
-    const match = useRouteMatch();
     const { topicId } = useParams();
     const [topic, setTopic] = useState(null);
     const [isLoading, setIsLoading] = useState(null);

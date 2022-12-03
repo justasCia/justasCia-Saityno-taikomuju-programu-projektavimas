@@ -18,8 +18,9 @@ const TopicListItem = ({ name, id }) => {
                 {isAdmin() &&
                     <Grid xs={12} md={4} item>
                         <ButtonGroup>
-
-                            <Button>
+                            <Button
+                                onClick={() => window.location.href=`/topics/${id}/edit`}
+                            >
                                 <Edit />
                                 Edit
                             </Button>

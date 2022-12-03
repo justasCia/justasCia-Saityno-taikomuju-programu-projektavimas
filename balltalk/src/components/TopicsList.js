@@ -27,7 +27,7 @@ const TopicsList = () => {
             {isAdmin() &&
                 <Link
                     style={{ textDecoration: 'none' }}
-                    to="/bybys"
+                    to="/topics/add"
                 >
                     <Button variant="contained" sx={{ mb: 2 }}>
                         <Add color="#000"></Add>

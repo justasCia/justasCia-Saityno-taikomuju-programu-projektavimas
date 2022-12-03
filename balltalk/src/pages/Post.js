@@ -14,6 +14,7 @@ const Post = () => {
 
     useEffect(() => {
         const getPost = async () => {
+            setIsLoading(true);
             const response = await Api.get(`/topics/${topicId}/posts/${postId}`, authConfig);
             setPost(response.data);
             setIsLoading(false);

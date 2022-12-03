@@ -44,13 +44,13 @@ const CommentsList = ({ topicId, postId }) => {
                                 {comment.content}
                             </Typography>
                         </Grid>
-                        <Grid item xs={7} md={3} key={index}>
+                        <Grid item xs={7} md={3}>
                             <Typography variant="caption" color="#bbb">
                                 {new Date(comment.posted).toLocaleString()}
                             </Typography>
                         </Grid>
                         {(isAdmin() || comment.userId == userId()) &&
-                            <Grid item xs={5} md={2} key={index}>
+                            <Grid item xs={5} md={2}>
                                 <ButtonGroup>
                                     {comment.userId == userId() &&
                                         <Button>
