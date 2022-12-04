@@ -4,6 +4,7 @@ import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Api, authConfig, isAdmin, userId } from "../components/Api";
+import ComfirmationModal from "../components/ComfirmationModal";
 import CommentsList from "../components/CommentsList";
 import Spinner from "../components/Spinner";
 
@@ -11,6 +12,22 @@ const Post = () => {
     const { topicId, postId } = useParams();
     const [post, setPost] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+
+    const handleOpenDeleteModal = () => {
+        setDeleteModalOpen(true);
+    };
+    const handleCloseDeleteModal = () => {
+        setDeleteModalOpen(false);
+    };
+
+    const deletePost = async () => {
+        setIsLoading(true);
+        await Api.delete(`/topics/${topicId}/posts/${postId}`, authConfig);
+        handleCloseDeleteModal();
+        setIsLoading(false);
+        window.location.href = `/topics/${topicId}`;
+    }
 
     useEffect(() => {
         const getPost = async () => {
@@ -49,7 +66,10 @@ const Post = () => {
                                         Approve
                                     </Button>
                                 }
-                                <Button sx={{ color: "#880808" }}>
+                                <Button
+                                    sx={{ color: "#880808" }}
+                                    onClick={handleOpenDeleteModal}
+                                >
                                     <Delete />
                                     Delete
                                 </Button>
@@ -66,6 +86,12 @@ const Post = () => {
                     </Paper>
 
                 </>}
+            <ComfirmationModal
+                open={deleteModalOpen}
+                message="Are you sure you want to delete this post?"
+                handleClose={handleCloseDeleteModal}
+                handleComfirm={deletePost}
+            />
         </>
     )
 }
