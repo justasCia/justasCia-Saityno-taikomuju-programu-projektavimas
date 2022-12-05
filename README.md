@@ -18,12 +18,10 @@ Veikimo principas – pačią kuriamą platformą sudaro dvi dalys: internetinė
 - Atsijungti nuo internetinės aplikacijos
 - Prisijungti (užsiregistruoti) prie platformos
 - Pridėti įrašą:
-    - Pridėti nuotrauką
     - Pridėti įrašo pavadinimą
     - Pridėti įrašo aprašymą
 - Paskelbti savo įrašą
 - Peržiūrėti kitų narių įrašus
-- Reitinguoti kitų narių įrašus
 - Komentuoti kitų narių įrašus
 - Ištrinti ar redaguoti savo komentarus;
 - Peržiūrėti įrašų komentarus
@@ -41,3 +39,5 @@ Veikimo principas – pačią kuriamą platformą sudaro dvi dalys: internetinė
 - Serverio pusė (angl. Back-End) – naudojant ASP>NET Core. Duomenų bazė – SQL server
 
 ![Picture1](https://user-images.githubusercontent.com/66777570/194723730-37666f03-8a72-4d8c-a33a-3e3e5ceb2e91.png)
+
+##API specification
