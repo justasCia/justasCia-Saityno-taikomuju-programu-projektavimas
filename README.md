@@ -42,4 +42,4 @@ Veikimo principas – pačią kuriamą platformą sudaro dvi dalys: internetinė
 
 ## API specification
 
-### GET /topics
+**GET /topics**
