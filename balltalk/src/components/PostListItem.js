@@ -24,6 +24,12 @@ const PostListItem = ({ name, postId, topicId, needsApproval, postOwnerId }) => 
         setIsLoading(false);
         window.location.href = `/topics/${topicId}`;
     }
+    const approvePost = async () => {
+        setIsLoading(true);
+        await Api.post(`/topics/${topicId}/posts/${postId}/approve`, {}, authConfig);
+        setIsLoading(false);
+        window.location.href = `/`;
+    }
     return (
         <>
             <Spinner open={isLoading} />
@@ -45,7 +51,7 @@ const PostListItem = ({ name, postId, topicId, needsApproval, postOwnerId }) => 
                                 </Button>
                             }
                             {(needsApproval && isAdmin()) &&
-                                <Button>
+                                <Button onClick={approvePost}>
                                     <Done />
                                     Approve
                                 </Button>
