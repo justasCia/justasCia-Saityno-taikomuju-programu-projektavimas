@@ -85,7 +85,7 @@ Veikimo principas – pačią kuriamą platformą sudaro dvi dalys: internetinė
 ### Komentaro redagavimo lango wireframe ir realizacija sistemoje
 
 ![image](https://user-images.githubusercontent.com/66777570/208944219-1526010f-a16b-492f-bf24-012ca69e891e.png)
-![image](https://user-images.githubusercontent.com/66777570/208944270-796514e2-18fb-4845-8d57-7e2fee831e9f.png)
+![image](https://user-images.githubusercontent.com/66777570/208974228-326c29d0-8b3b-40c2-8d0c-03ada42694b5.png)
 
 ### Likusių langų ir modalinių langų realizacija sistemoje:
 
@@ -96,6 +96,519 @@ Veikimo principas – pačią kuriamą platformą sudaro dvi dalys: internetinė
 
 
 
-## API specification
+## API specifikacija 
 
-**GET /topics**
+### GET Topic
+
+Grąžina vieną specifinę temą pagal id. 
+
+##### Parametrai
+
+id - temos id
+
+##### Galimi atsako kodai
+
+```
+404 - not found 
+401 - unauthorized
+200 -OK
+``` 
+
+##### Užklausos pavyzdys
+
+`https://balltalkapi.azurewebsites.net/api/Topics/1`
+
+##### Atsakymas į pavyzdinę užklausą
+ ```
+{
+  "id": 0,
+  "name": "string"
+}
+ ```
+ 
+#### GET Topics
+
+Grąžina visas temas esančias duomenų bazėje.
+
+##### Galimi atsako kodai
+
+```
+404 - not found 
+401 - unauthorized
+200 -OK 
+```
+
+##### Užklausos pavyzdys
+
+`https://balltalkapi.azurewebsites.net/api/Topics`
+
+##### Atsakymas į pavyzdinę užklausą
+
+```
+[
+  {
+    "id": 0,
+    "name": "string"
+  }
+]
+```
+
+#### POST Topic
+
+Sukuria naują temą.
+
+##### Galimi atsako kodai
+
+```
+401 - unauthorized
+201 - Created
+``` 
+
+##### Užklausos pavyzdys
+
+`https://balltalkapi.azurewebsites.net/api/Topics`
+
+Body:
+```
+{
+  "name": "string"
+}
+```
+
+##### Atsakymas į pavyzdinę užklausą
+
+```
+{
+  "id": 0,
+  "name": "string"
+}
+```
+
+#### DEL Topic
+
+Ištrina specifinę temą, nurodytą pagal id.
+
+##### Parametrai
+
+id - temos id
+
+##### Galimi atsako kodai
+
+```
+401 - unauthorized
+404 - not found 
+200 - ok
+```
+
+##### Užklausos pavyzdys
+
+`https://balltalkapi.azurewebsites.net/api/Topics/1`
+
+##### Atsakymas į pavyzdinę užklausą
+
+{}
+
+#### PUT Topic
+
+Redaguoja specifinę temą nurodytą pagal id.
+
+##### Parametrai
+
+id - temos id
+
+##### Galimi atsako kodai
+
+```
+401 - unauthorized
+404 - not found 
+200 - OK
+```
+
+##### Užklausos pavyzdys
+
+`https://balltalkapi.azurewebsites.net/api/Topics/1`
+
+Body:
+
+```
+{
+  "name": "string"
+}
+```
+
+##### Atsakymas į pavyzdinę užklausą
+
+```
+{
+  "id": 0,
+  "name": "string"
+}
+```
+
+
+#### GET all topic posts
+
+Grąžina visus specifinės temos, nurodyto pagal id, įrašus.
+
+##### Parametrai
+
+id - temos id
+
+##### Galimi atsako kodai
+
+```
+401 - unauthorized
+404 - not found
+200 - OK 
+``` 
+
+##### Užklausos pavyzdys
+
+`https://balltalkapi.azurewebsites.net/api/Topics/1/Posts`
+
+##### Atsakymas į pavyzdinę užklausą
+
+```
+[
+  {
+    "id": 0,
+    "title": "string",
+    "content": "string",
+    "approved": true,
+    "posted": "2022-12-21T18:14:48.565Z",
+    "userId": "string",
+    "topicId": 0
+  }
+]
+```
+
+#### GET post
+
+Grąžina vieną specifinės temos nurodytą pagal temos id įrašą.
+
+##### Parametrai
+
+topicId - temos id
+
+id - įrašo id
+
+##### Galimi atsako kodai
+
+```
+401 - unauthorized
+404 - not found
+200 - OK 
+``` 
+
+##### Užklausos pavyzdys
+
+`https://balltalkapi.azurewebsites.net/api/Topics/1/Posts/1`
+
+##### Atsakymas į pavyzdinę užklausą
+
+```
+{
+  "id": 0,
+  "title": "string",
+  "content": "string",
+  "approved": true,
+  "posted": "2022-12-21T18:16:31.987Z",
+  "userId": "string",
+  "topicId": 0
+}
+```
+
+#### POST Post
+
+Sukuria naują įrašą temoje.
+
+##### Parametrai
+
+topicId - temos id
+
+##### Galimi atsako kodai
+
+```
+401 - unauthorized
+404 - not found
+201 - created 
+``` 
+
+##### Užklausos pavyzdys
+
+`https://balltalkapi.azurewebsites.net/api/Topics/1/Posts`
+
+Body:
+```
+{
+  "title": "string",
+  "content": "string"
+}
+```
+
+##### Atsakymas į pavyzdinę užklausą
+
+```
+{
+  "id": 0,
+  "title": "string",
+  "content": "string",
+  "approved": true,
+  "posted": "2022-12-21T18:17:03.175Z",
+  "userId": "string",
+  "topicId": 0
+}
+```
+
+#### DEL Post
+
+Ištrina specifinį įrašą.
+
+##### Parametrai
+
+topicId - temos id
+
+id - įrašo id
+
+##### Galimi atsako kodai
+
+```
+401 - unauthorized
+404 - not found
+204 - no content 
+``` 
+
+##### Užklausos pavyzdys
+
+`https://balltalkapi.azurewebsites.net/api/Topics/1/Posts/1`
+
+##### Atsakymas į pavyzdinę užklausą
+
+{}
+
+#### PUT Post
+
+Redaguoja konkretų įrašą.
+
+##### Parametrai
+
+topicId - temos id
+
+id - įrašo id
+
+##### Galimi atsako kodai
+
+```
+401 - unauthorized
+404 - not found
+200 - OK 
+``` 
+
+##### Užklausos pavyzdys
+
+`https://balltalkapi.azurewebsites.net/api/Topics/1/Posts/1`
+
+Body:
+```
+{
+  "title": "string",
+  "content": "string"
+}
+```
+
+##### Atsakymas į pavyzdinę užklausą
+
+```
+{
+  "id": 0,
+  "title": "string",
+  "content": "string",
+  "approved": true,
+  "posted": "2022-12-21T18:18:58.066Z",
+  "userId": "string",
+  "topicId": 0
+}
+```
+
+#### GET all post comments
+
+Grąžina konkretaus įrašo visus komentarus.
+
+##### Parametrai
+
+topicId - temos id
+
+postId - įrašo id
+
+##### Galimi atsako kodai
+
+```
+401 - unauthorized
+404 - not found
+200 - OK 
+``` 
+
+##### Užklausos pavyzdys
+
+`https://balltalkapi.azurewebsites.net/api/Topics/1/Posts/1/Comments`
+
+##### Atsakymas į pavyzdinę užklausą
+
+```
+[
+  {
+    "id": 0,
+    "content": "string",
+    "posted": "2022-12-21T18:21:06.723Z",
+    "userId": "string"
+  }
+]
+```
+
+#### GET comment
+
+Grąžina vieną konkretų įrašo komentarą.
+
+##### Parametrai
+
+topicId - temos id
+
+postId - įrašo id
+
+id - komentaro id
+
+##### Galimi atsako kodai
+
+```
+401 - unauthorized
+404 - not found
+200 - OK 
+``` 
+
+##### Užklausos pavyzdys
+
+`https://balltalkapi.azurewebsites.net/api/Topics/1/Posts/1/Comments`
+
+##### Atsakymas į pavyzdinę užklausą
+
+```
+{
+  "id": 0,
+  "content": "string",
+  "posted": "2022-12-21T18:22:13.967Z",
+  "userId": "string"
+}
+```
+
+#### POST comment
+
+Sukuria naują įrašo komentarą.
+
+##### Parametrai
+
+topicId - temos id
+
+postId - įrašo id
+
+##### Galimi atsako kodai
+
+```
+401 - unauthorized
+201 - created 
+``` 
+
+##### Užklausos pavyzdys
+
+`https://balltalkapi.azurewebsites.net/api/Topics/1/Posts/1/Comments`
+
+Body:
+```
+{
+  "content": "string"
+}
+```
+
+##### Atsakymas į pavyzdinę užklausą
+
+```
+{
+  "id": 0,
+  "content": "string",
+  "posted": "2022-12-21T18:23:28.661Z",
+  "userId": "string"
+}
+```
+
+#### DEL comment
+
+Ištrina komentarą.
+
+##### Parametrai
+
+topicId - temos id
+
+postId - įrašo id
+
+id - komentaro id
+
+##### Galimi atsako kodai
+
+```
+401 - unauthorized
+404 - not found
+204 - no content 
+``` 
+
+##### Užklausos pavyzdys
+
+`https://balltalkapi.azurewebsites.net/api/Topics/1/Posts/1/Comments/1`
+
+##### Atsakymas į pavyzdinę užklausą
+
+{}
+
+#### PUT comment
+
+Redaguoja specifinį komentarą.
+
+##### Parametrai
+
+topicId - temos id
+
+postId - įrašo id
+
+id - komentaro id
+
+##### Galimi atsako kodai
+
+```
+401 - unauthorized
+404 - not found
+200 - OK 
+``` 
+
+##### Užklausos pavyzdys
+
+`https://balltalkapi.azurewebsites.net/api/Topics/1/Posts/1/Comments`
+
+Body:
+```
+{
+  "content": "string"
+}
+```
+
+##### Atsakymas į pavyzdinę užklausą
+
+```
+{
+  "id": 0,
+  "content": "string",
+  "posted": "2022-12-21T18:24:56.621Z",
+  "userId": "string"
+}
+```
+
+## Išvados
+
+Modulio metu buvo sukurta veikianti ir savo funkcijas atliekanti krepšinio megėjams skirta forumo sistema. Buvo pagilintos ASP.NET ir React.Js žinios, susipažinta su REST API kūrimo specifika ir procesu. Implementuojant sistemos autorizaciją ir autentifikaciją buvo gilinamasi į JWT tokenų naudojimą ir pritaikymą kuriamai sistemai. Pagerintos web dizaino žinios. 
