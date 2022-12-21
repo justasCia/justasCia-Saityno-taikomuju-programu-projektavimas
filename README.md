@@ -40,6 +40,29 @@ Veikimo principas – pačią kuriamą platformą sudaro dvi dalys: internetinė
 
 ![Picture1](https://user-images.githubusercontent.com/66777570/194723730-37666f03-8a72-4d8c-a33a-3e3e5ceb2e91.png)
 
+## Naudotojo sąsajos projektas
+
+### Prisijungimo lango wireframe ir realizacija sistemoje
+
+![image](https://user-images.githubusercontent.com/66777570/208941960-99dc7286-c3af-4886-acfe-e9b0dfe46b66.png)
+![image](https://user-images.githubusercontent.com/66777570/208942076-c0725950-e759-4db5-93c4-ea05ea69227c.png)
+
+### Registracijos lango wireframe ir realizacija sistemoje
+
+![image](https://user-images.githubusercontent.com/66777570/208942204-49493492-5755-4df4-95f4-b5da35a1b04e.png)
+![image](https://user-images.githubusercontent.com/66777570/208942286-9ebcc484-cdf7-4d20-a58f-f029692e80de.png)
+
+### Temų peržiūros lango wireframe ir realizacija sistemoje
+
+![image](https://user-images.githubusercontent.com/66777570/208942404-abd00a0b-ce07-4cbe-88b8-d293cac1b3a1.png)
+![image](https://user-images.githubusercontent.com/66777570/208942536-c39467ce-0512-42b2-b4af-abac6977b189.png)
+
+### Temos pridėjimo lango wireframe ir realizacija sistemoje
+
+![image](https://user-images.githubusercontent.com/66777570/208942735-0d220754-538a-4119-957a-2dd9ab7b6d79.png)
+![image](https://user-images.githubusercontent.com/66777570/208942803-487aed97-7ac5-42d4-bb94-4fadc051ae6c.png)
+
+
 ## API specification
 
 **GET /topics**
