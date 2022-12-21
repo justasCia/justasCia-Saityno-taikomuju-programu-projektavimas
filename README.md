@@ -62,6 +62,39 @@ Veikimo principas – pačią kuriamą platformą sudaro dvi dalys: internetinė
 ![image](https://user-images.githubusercontent.com/66777570/208942735-0d220754-538a-4119-957a-2dd9ab7b6d79.png)
 ![image](https://user-images.githubusercontent.com/66777570/208942803-487aed97-7ac5-42d4-bb94-4fadc051ae6c.png)
 
+### Temos įrašų peržiūros lango wireframe ir realizacija sistemoje
+
+![image](https://user-images.githubusercontent.com/66777570/208943394-3a7867a6-ccb5-4418-849a-ec6fac7bbd28.png)
+![image](https://user-images.githubusercontent.com/66777570/208943438-a63c032f-ee53-4a3a-95fd-8f87dbf23164.png)
+
+### Įrašo pridėjimo lango wireframe ir realizacija sistemoje
+
+![image](https://user-images.githubusercontent.com/66777570/208943639-c7c273d7-6f6a-4cfe-aa04-a768019599dd.png)
+![image](https://user-images.githubusercontent.com/66777570/208943662-64728f70-42fd-42de-8067-0097659a3771.png)
+
+### Įrašo bei jo komentarų peržiūros lango wireframe ir realizacija sistemoje
+
+![image](https://user-images.githubusercontent.com/66777570/208943843-bab5e097-9e66-4ced-b00f-880814adf20d.png)
+![image](https://user-images.githubusercontent.com/66777570/208943898-af7d1b70-c061-4e02-b45e-8d06eead331f.png)
+
+### Komentaro pridėjimo lango wireframe ir realizacija sistemoje
+
+![image](https://user-images.githubusercontent.com/66777570/208943998-ac2bb619-efcf-4de6-a0be-fc266ebaed05.png)
+![image](https://user-images.githubusercontent.com/66777570/208944047-b8cd2389-5292-4e06-a6e6-afbe4e737b05.png)
+
+### Komentaro redagavimo lango wireframe ir realizacija sistemoje
+
+![image](https://user-images.githubusercontent.com/66777570/208944219-1526010f-a16b-492f-bf24-012ca69e891e.png)
+![image](https://user-images.githubusercontent.com/66777570/208944270-796514e2-18fb-4845-8d57-7e2fee831e9f.png)
+
+### Likusių langų ir modalinių langų realizacija sistemoje:
+
+![image](https://user-images.githubusercontent.com/66777570/208944586-805788a8-a78f-4b29-b7d6-9c1aa8de12cd.png)
+![image](https://user-images.githubusercontent.com/66777570/208944650-29dbf56c-e2b6-4b3f-924b-abfbdc7e9956.png)
+![image](https://user-images.githubusercontent.com/66777570/208944686-948c2f7a-6432-49a2-a007-744537343513.png)
+
+
+
 
 ## API specification
 
